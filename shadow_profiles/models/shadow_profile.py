@@ -27,6 +27,22 @@ class ShadowProfile(models.Model):
     is_converted = fields.Boolean(string='Is Converted', default=False)
     partner_id = fields.Many2one('res.partner', string='Related Partner', ondelete='set null')
     notes = fields.Text(string='Notes')
+    
+    # One2many to conversations
+    conversation_ids = fields.One2many(
+        'shadow.conversation',
+        'shadow_profile_id',
+        string='Conversations'
+    )
+    conversation_count = fields.Integer(
+        string='Conversations Count',
+        compute='_compute_conversation_count'
+    )
+
+    @api.depends('conversation_ids')
+    def _compute_conversation_count(self):
+        for record in self:
+            record.conversation_count = len(record.conversation_ids)
 
     @api.model
     def create(self, vals):

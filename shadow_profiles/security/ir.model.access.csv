@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_shadow_profile_user,shadow.profile.user,model_shadow_profile,base.group_user,1,1,1,1
+access_shadow_conversation_user,shadow.conversation.user,model_shadow_conversation,base.group_user,1,1,1,1

@@ -26,6 +26,12 @@
             <form string="Shadow Profile">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="action"
+                                name="%(shadow_conversation_action)d"
+                                icon="fa-comments"
+                                context="{'search_default_shadow_profile_id': active_id}">
+                            <field name="conversation_count" widget="statinfo" string="Conversations"/>
+                        </button>
                         <button name="%(base.action_partner_form)d" type="action"
                                 class="oe_stat_button" icon="fa-user"
                                 invisible="not partner_id"
@@ -68,6 +74,18 @@
                         </page>
                         <page string="Notes" name="notes">
                             <field name="notes" placeholder="Enter notes..."/>
+                        </page>
+                    <page string="Conversations" name="conversations">
+                            <field name="conversation_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="timestamp"/>
+                                    <field name="channel"/>
+                                    <field name="direction"/>
+                                    <field name="message"/>
+                                    <field name="agent_id"/>
+                                    <field name="is_ai_response"/>
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

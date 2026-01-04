@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="shadow_conversation_view_list" model="ir.ui.view">
+        <field name="name">shadow.conversation.list</field>
+        <field name="model">shadow.conversation</field>
+        <field name="arch" type="xml">
+            <list string="Conversations">
+                <field name="timestamp"/>
+                <field name="shadow_profile_id"/>
+                <field name="channel" widget="badge"/>
+                <field name="direction" widget="badge" decoration-info="direction == 'incoming'" decoration-success="direction == 'outgoing'"/>
+                <field name="message" widget="text"/>
+                <field name="agent_id"/>
+                <field name="is_ai_response" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="shadow_conversation_view_form" model="ir.ui.view">
+        <field name="name">shadow.conversation.form</field>
+        <field name="model">shadow.conversation</field>
+        <field name="arch" type="xml">
+            <form string="Conversation">
+                <sheet>
+                    <group>
+                        <group string="Message Details">
+                            <field name="shadow_profile_id"/>
+                            <field name="channel" widget="radio"/>
+                            <field name="direction" widget="radio"/>
+                            <field name="timestamp"/>
+                        </group>
+                        <group string="Response Info">
+                            <field name="agent_id"/>
+                            <field name="is_ai_response"/>
+                        </group>
+                    </group>
+                    <group string="Message">
+                        <field name="message" nolabel="1" placeholder="Enter message content..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="shadow_conversation_view_search" model="ir.ui.view">
+        <field name="name">shadow.conversation.search</field>
+        <field name="model">shadow.conversation</field>
+        <field name="arch" type="xml">
+            <search string="Conversations">
+                <field name="shadow_profile_id"/>
+                <field name="message"/>
+                <field name="agent_id"/>
+                <separator/>
+                <filter string="Incoming" name="incoming" domain="[('direction', '=', 'incoming')]"/>
+                <filter string="Outgoing" name="outgoing" domain="[('direction', '=', 'outgoing')]"/>
+                <separator/>
+                <filter string="AI Responses" name="ai_response" domain="[('is_ai_response', '=', True)]"/>
+                <separator/>
+                <filter string="WhatsApp" name="whatsapp" domain="[('channel', '=', 'whatsapp')]"/>
+                <filter string="Messenger" name="messenger" domain="[('channel', '=', 'messenger')]"/>
+                <filter string="Instagram" name="instagram" domain="[('channel', '=', 'instagram')]"/>
+                <filter string="Telegram" name="telegram" domain="[('channel', '=', 'telegram')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Profile" name="group_profile" context="{'group_by': 'shadow_profile_id'}"/>
+                    <filter string="Channel" name="group_channel" context="{'group_by': 'channel'}"/>
+                    <filter string="Direction" name="group_direction" context="{'group_by': 'direction'}"/>
+                    <filter string="Agent" name="group_agent" context="{'group_by': 'agent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="shadow_conversation_action" model="ir.actions.act_window">
+        <field name="name">Conversations</field>
+        <field name="res_model">shadow.conversation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="shadow_conversation_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No conversations yet
+            </p>
+            <p>
+                Conversations with shadow profiles will appear here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="shadow_conversation_menu"
+              name="Conversations"
+              parent="shadow_profiles_menu_root"
+              action="shadow_conversation_action"
+              sequence="20"/>
+
+</odoo>
