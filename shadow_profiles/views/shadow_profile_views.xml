@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree View -->
+    <!-- List View -->
     <record id="shadow_profile_view_tree" model="ir.ui.view">
         <field name="name">shadow.profile.list</field>
         <field name="model">shadow.profile</field>
@@ -75,7 +75,7 @@
                         <page string="Notes" name="notes">
                             <field name="notes" placeholder="Enter notes..."/>
                         </page>
-                    <page string="Conversations" name="conversations">
+                        <page string="Conversations" name="conversations">
                             <field name="conversation_ids" nolabel="1">
                                 <list editable="bottom">
                                     <field name="timestamp"/>
@@ -188,5 +188,11 @@
               parent="shadow_profiles_menu_root"
               action="shadow_profile_action"
               sequence="10"/>
+
+    <menuitem id="shadow_conversation_menu"
+              name="Conversations"
+              parent="shadow_profiles_menu_root"
+              action="shadow_conversation_action"
+              sequence="20"/>
 
 </odoo>

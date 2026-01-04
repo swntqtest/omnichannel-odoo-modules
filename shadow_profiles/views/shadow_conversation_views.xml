@@ -89,11 +89,4 @@
         </field>
     </record>
 
-    <!-- Menu Item -->
-    <menuitem id="shadow_conversation_menu"
-              name="Conversations"
-              parent="shadow_profiles_menu_root"
-              action="shadow_conversation_action"
-              sequence="20"/>
-
 </odoo>

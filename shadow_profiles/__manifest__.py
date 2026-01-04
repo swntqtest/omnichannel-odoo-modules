@@ -23,8 +23,8 @@
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
-        'views/shadow_profile_views.xml',
         'views/shadow_conversation_views.xml',
+        'views/shadow_profile_views.xml',
     ],
     'installable': True,
     'application': True,
