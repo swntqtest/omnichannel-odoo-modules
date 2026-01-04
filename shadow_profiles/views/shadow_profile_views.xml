@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="shadow_profile_view_tree" model="ir.ui.view">
+        <field name="name">shadow.profile.tree</field>
+        <field name="model">shadow.profile</field>
+        <field name="arch" type="xml">
+            <tree string="Shadow Profiles">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="source_channel" widget="badge" decoration-info="source_channel in ('facebook', 'instagram')" decoration-success="source_channel in ('whatsapp', 'telegram')"/>
+                <field name="location"/>
+                <field name="first_contact_date"/>
+                <field name="last_contact_date"/>
+                <field name="is_converted" widget="boolean_toggle"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="shadow_profile_view_form" model="ir.ui.view">
+        <field name="name">shadow.profile.form</field>
+        <field name="model">shadow.profile</field>
+        <field name="arch" type="xml">
+            <form string="Shadow Profile">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(base.action_partner_form)d" type="action"
+                                class="oe_stat_button" icon="fa-user"
+                                invisible="not partner_id"
+                                context="{'default_id': partner_id}">
+                            <field name="partner_id" widget="statinfo" string="Partner"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Converted" bg_color="text-bg-success" invisible="not is_converted"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Profile Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Contact Information">
+                            <field name="phone" widget="phone"/>
+                            <field name="location"/>
+                            <field name="source_channel" widget="radio"/>
+                        </group>
+                        <group string="Social Media IDs">
+                            <field name="facebook_id"/>
+                            <field name="instagram_id"/>
+                            <field name="whatsapp_id"/>
+                            <field name="telegram_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Dates">
+                            <field name="first_contact_date"/>
+                            <field name="last_contact_date"/>
+                        </group>
+                        <group string="Conversion">
+                            <field name="is_converted"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Interests" name="interests">
+                            <field name="interests" placeholder="Enter interests..."/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Enter notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="shadow_profile_view_search" model="ir.ui.view">
+        <field name="name">shadow.profile.search</field>
+        <field name="model">shadow.profile</field>
+        <field name="arch" type="xml">
+            <search string="Shadow Profiles">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="location"/>
+                <field name="facebook_id"/>
+                <field name="instagram_id"/>
+                <field name="whatsapp_id"/>
+                <field name="telegram_id"/>
+                <separator/>
+                <filter string="Converted" name="converted" domain="[('is_converted', '=', True)]"/>
+                <filter string="Not Converted" name="not_converted" domain="[('is_converted', '=', False)]"/>
+                <separator/>
+                <filter string="Facebook" name="facebook" domain="[('source_channel', '=', 'facebook')]"/>
+                <filter string="Instagram" name="instagram" domain="[('source_channel', '=', 'instagram')]"/>
+                <filter string="WhatsApp" name="whatsapp" domain="[('source_channel', '=', 'whatsapp')]"/>
+                <filter string="Telegram" name="telegram" domain="[('source_channel', '=', 'telegram')]"/>
+                <filter string="Website" name="website" domain="[('source_channel', '=', 'website')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Source Channel" name="group_source" context="{'group_by': 'source_channel'}"/>
+                    <filter string="Location" name="group_location" context="{'group_by': 'location'}"/>
+                    <filter string="Converted" name="group_converted" context="{'group_by': 'is_converted'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="shadow_profile_view_kanban" model="ir.ui.view">
+        <field name="name">shadow.profile.kanban</field>
+        <field name="model">shadow.profile</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="source_channel" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="source_channel"/>
+                <field name="is_converted"/>
+                <field name="partner_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle" t-if="record.phone.raw_value">
+                                    <i class="fa fa-phone"/> <field name="phone"/>
+                                </div>
+                                <div t-if="record.location.raw_value">
+                                    <i class="fa fa-map-marker"/> <field name="location"/>
+                                </div>
+                                <div class="mt-2">
+                                    <span t-if="record.is_converted.raw_value" class="badge text-bg-success">Converted</span>
+                                    <span t-else="" class="badge text-bg-secondary">Prospect</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="shadow_profile_action" model="ir.actions.act_window">
+        <field name="name">Shadow Profiles</field>
+        <field name="res_model">shadow.profile</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="shadow_profile_view_search"/>
+        <field name="context">{'search_default_not_converted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Shadow Profile
+            </p>
+            <p>
+                Track potential customers from social media and other channels.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="shadow_profiles_menu_root"
+              name="Shadow Profiles"
+              sequence="50"
+              web_icon="shadow_profiles,static/description/icon.png"/>
+
+    <menuitem id="shadow_profiles_menu_main"
+              name="Profiles"
+              parent="shadow_profiles_menu_root"
+              action="shadow_profile_action"
+              sequence="10"/>
+
+</odoo>
