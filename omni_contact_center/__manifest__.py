@@ -37,9 +37,9 @@
     'data': [
         'security/ir.model.access.csv',
         'data/cc_sequence.xml',
-        'views/cc_team_views.xml',
         'views/cc_agent_views.xml',
         'views/cc_queue_views.xml',
+        'views/cc_team_views.xml',
         'views/cc_menu.xml',
     ],
     'installable': True,
