@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cc_skill_user,cc.skill.user,model_cc_skill,base.group_user,1,1,1,1
+access_cc_team_user,cc.team.user,model_cc_team,base.group_user,1,1,1,1
+access_cc_agent_user,cc.agent.user,model_cc_agent,base.group_user,1,1,1,1
+access_cc_queue_user,cc.queue.user,model_cc_queue,base.group_user,1,1,1,1
+access_cc_shift_user,cc.shift.user,model_cc_shift,base.group_user,1,1,1,1
+access_cc_call_user,cc.call.user,model_cc_call,base.group_user,1,1,1,1

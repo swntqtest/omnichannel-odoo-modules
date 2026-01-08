@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Call/Interaction Sequence -->
+        <record id="seq_cc_call" model="ir.sequence">
+            <field name="name">Contact Center Call</field>
+            <field name="code">cc.call</field>
+            <field name="prefix">CALL/%(year)s/</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

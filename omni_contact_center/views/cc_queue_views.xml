@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Queue List View -->
+    <record id="cc_queue_view_list" model="ir.ui.view">
+        <field name="name">cc.queue.list</field>
+        <field name="model">cc.queue</field>
+        <field name="arch" type="xml">
+            <list string="Queues">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="queue_type" widget="badge"/>
+                <field name="routing_strategy"/>
+                <field name="priority"/>
+                <field name="calls_waiting"/>
+                <field name="sla_answer_seconds"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Queue Form View -->
+    <record id="cc_queue_view_form" model="ir.ui.view">
+        <field name="name">cc.queue.form</field>
+        <field name="model">cc.queue</field>
+        <field name="arch" type="xml">
+            <form string="Queue">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Queue Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Basic Info">
+                            <field name="code"/>
+                            <field name="queue_type"/>
+                            <field name="routing_strategy"/>
+                            <field name="priority"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="SLA Settings">
+                            <field name="sla_answer_seconds"/>
+                            <field name="sla_abandon_seconds"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Working Hours">
+                            <field name="is_24_7"/>
+                            <field name="working_hours_start" widget="float_time" invisible="is_24_7"/>
+                            <field name="working_hours_end" widget="float_time" invisible="is_24_7"/>
+                        </group>
+                        <group string="Statistics">
+                            <field name="calls_waiting"/>
+                            <field name="avg_wait_time"/>
+                            <field name="avg_handle_time"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Required Skills" name="skills">
+                            <field name="required_skill_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Assigned Teams" name="teams">
+                            <field name="team_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="agent_count"/>
+                                    <field name="available_agent_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Queue Search View -->
+    <record id="cc_queue_view_search" model="ir.ui.view">
+        <field name="name">cc.queue.search</field>
+        <field name="model">cc.queue</field>
+        <field name="arch" type="xml">
+            <search string="Search Queues">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="queue_type"/>
+                <separator/>
+                <filter string="Voice" name="voice" domain="[('queue_type', '=', 'voice')]"/>
+                <filter string="Chat" name="chat" domain="[('queue_type', '=', 'chat')]"/>
+                <filter string="Email" name="email" domain="[('queue_type', '=', 'email')]"/>
+                <filter string="Social" name="social" domain="[('queue_type', '=', 'social')]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="group_by_type" context="{'group_by': 'queue_type'}"/>
+                    <filter string="Strategy" name="group_by_strategy" context="{'group_by': 'routing_strategy'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Queue Action -->
+    <record id="cc_queue_action" model="ir.actions.act_window">
+        <field name="name">Queues</field>
+        <field name="res_model">cc.queue</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="cc_queue_view_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first queue
+            </p>
+            <p>
+                Queues route incoming interactions to available agents based on skills and strategy.
+            </p>
+        </field>
+    </record>
+
+    <!-- Call List View -->
+    <record id="cc_call_view_list" model="ir.ui.view">
+        <field name="name">cc.call.list</field>
+        <field name="model">cc.call</field>
+        <field name="arch" type="xml">
+            <list string="Calls/Interactions">
+                <field name="name"/>
+                <field name="start_time"/>
+                <field name="interaction_type" widget="badge"/>
+                <field name="channel" widget="badge"/>
+                <field name="status" widget="badge" decoration-success="status == 'completed'" decoration-warning="status in ['queued', 'ringing']" decoration-info="status == 'in_progress'" decoration-danger="status in ['missed', 'abandoned']"/>
+                <field name="caller_number"/>
+                <field name="caller_name"/>
+                <field name="agent_id"/>
+                <field name="queue_id"/>
+                <field name="wait_duration"/>
+                <field name="talk_duration"/>
+                <field name="disposition"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Call Form View -->
+    <record id="cc_call_view_form" model="ir.ui.view">
+        <field name="name">cc.call.form</field>
+        <field name="model">cc.call</field>
+        <field name="arch" type="xml">
+            <form string="Call/Interaction">
+                <header>
+                    <button name="action_answer" type="object" string="Answer" class="btn-primary" invisible="status not in ['queued', 'ringing']"/>
+                    <button name="action_hold" type="object" string="Hold" invisible="status != 'in_progress'"/>
+                    <button name="action_resume" type="object" string="Resume" invisible="status != 'on_hold'"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-success" invisible="status not in ['in_progress', 'on_hold']"/>
+                    <field name="status" widget="statusbar" statusbar_visible="queued,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Interaction Info">
+                            <field name="interaction_type"/>
+                            <field name="channel"/>
+                            <field name="queue_id"/>
+                            <field name="agent_id"/>
+                        </group>
+                        <group string="Caller Info">
+                            <field name="caller_number"/>
+                            <field name="caller_name"/>
+                            <field name="shadow_profile_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Times">
+                            <field name="start_time"/>
+                            <field name="answer_time"/>
+                            <field name="end_time"/>
+                        </group>
+                        <group string="Durations">
+                            <field name="wait_duration"/>
+                            <field name="talk_duration"/>
+                            <field name="hold_duration"/>
+                            <field name="total_duration"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Outcome">
+                            <field name="disposition"/>
+                            <field name="customer_rating"/>
+                        </group>
+                        <group string="Transfer">
+                            <field name="transferred_from"/>
+                            <field name="transferred_to"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Recording">
+                            <field name="has_recording"/>
+                            <field name="recording_url" invisible="not has_recording"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Call Search View -->
+    <record id="cc_call_view_search" model="ir.ui.view">
+        <field name="name">cc.call.search</field>
+        <field name="model">cc.call</field>
+        <field name="arch" type="xml">
+            <search string="Search Calls">
+                <field name="name"/>
+                <field name="caller_number"/>
+                <field name="caller_name"/>
+                <field name="agent_id"/>
+                <field name="queue_id"/>
+                <separator/>
+                <filter string="Inbound" name="inbound" domain="[('interaction_type', '=', 'inbound')]"/>
+                <filter string="Outbound" name="outbound" domain="[('interaction_type', '=', 'outbound')]"/>
+                <separator/>
+                <filter string="Voice" name="voice" domain="[('channel', '=', 'voice')]"/>
+                <filter string="Chat" name="chat" domain="[('channel', '=', 'chat')]"/>
+                <filter string="WhatsApp" name="whatsapp" domain="[('channel', '=', 'whatsapp')]"/>
+                <separator/>
+                <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="Missed" name="missed" domain="[('status', '=', 'missed')]"/>
+                <filter string="Abandoned" name="abandoned" domain="[('status', '=', 'abandoned')]"/>
+                <separator/>
+                <filter string="Today" name="today" domain="[('start_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Agent" name="group_by_agent" context="{'group_by': 'agent_id'}"/>
+                    <filter string="Queue" name="group_by_queue" context="{'group_by': 'queue_id'}"/>
+                    <filter string="Channel" name="group_by_channel" context="{'group_by': 'channel'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by': 'start_time:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Call Action -->
+    <record id="cc_call_action" model="ir.actions.act_window">
+        <field name="name">Call Log</field>
+        <field name="res_model">cc.call</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="cc_call_view_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No calls yet
+            </p>
+            <p>
+                Call logs track all customer interactions across channels.
+            </p>
+        </field>
+    </record>
+
+</odoo>

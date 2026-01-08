@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Menu -->
+    <menuitem id="cc_menu_root"
+              name="Contact Center"
+              web_icon="omni_contact_center,static/description/icon.png"
+              sequence="50"/>
+
+    <!-- Operations Menu -->
+    <menuitem id="cc_menu_operations"
+              name="Operations"
+              parent="cc_menu_root"
+              sequence="10"/>
+
+    <menuitem id="cc_menu_agents"
+              name="Agents"
+              parent="cc_menu_operations"
+              action="cc_agent_action"
+              sequence="10"/>
+
+    <menuitem id="cc_menu_calls"
+              name="Call Log"
+              parent="cc_menu_operations"
+              action="cc_call_action"
+              sequence="20"/>
+
+    <menuitem id="cc_menu_shifts"
+              name="Shifts"
+              parent="cc_menu_operations"
+              action="cc_shift_action"
+              sequence="30"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="cc_menu_config"
+              name="Configuration"
+              parent="cc_menu_root"
+              sequence="90"/>
+
+    <menuitem id="cc_menu_teams"
+              name="Teams"
+              parent="cc_menu_config"
+              action="cc_team_action"
+              sequence="10"/>
+
+    <menuitem id="cc_menu_queues"
+              name="Queues"
+              parent="cc_menu_config"
+              action="cc_queue_action"
+              sequence="20"/>
+
+    <menuitem id="cc_menu_skills"
+              name="Skills"
+              parent="cc_menu_config"
+              action="cc_skill_action"
+              sequence="30"/>
+
+</odoo>

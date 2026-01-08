@@ -33,9 +33,10 @@
     """,
     'author': 'Omnichannel Team',
     'website': 'https://github.com/swntqtest/omnichannel-odoo-modules',
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr', 'shadow_profiles'],
     'data': [
         'security/ir.model.access.csv',
+        'data/cc_sequence.xml',
         'views/cc_team_views.xml',
         'views/cc_agent_views.xml',
         'views/cc_queue_views.xml',

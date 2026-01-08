@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Team List View -->
+    <record id="cc_team_view_list" model="ir.ui.view">
+        <field name="name">cc.team.list</field>
+        <field name="model">cc.team</field>
+        <field name="arch" type="xml">
+            <list string="Teams">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="leader_id"/>
+                <field name="agent_count"/>
+                <field name="available_agent_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Team Form View -->
+    <record id="cc_team_view_form" model="ir.ui.view">
+        <field name="name">cc.team.form</field>
+        <field name="model">cc.team</field>
+        <field name="arch" type="xml">
+            <form string="Team">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(omni_contact_center.cc_agent_action)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-users"
+                                context="{'search_default_team_id': id}">
+                            <field name="agent_count" widget="statinfo" string="Agents"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Team Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="leader_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="available_agent_count"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Agents" name="agents">
+                            <field name="agent_ids" context="{'default_team_id': id}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="agent_code"/>
+                                    <field name="status" widget="badge" decoration-success="status == 'available'" decoration-warning="status in ['on_break', 'after_call']" decoration-danger="status == 'offline'" decoration-info="status == 'busy'"/>
+                                    <field name="extension"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Queues" name="queues">
+                            <field name="queue_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="queue_type"/>
+                                    <field name="routing_strategy"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Team Search View -->
+    <record id="cc_team_view_search" model="ir.ui.view">
+        <field name="name">cc.team.search</field>
+        <field name="model">cc.team</field>
+        <field name="arch" type="xml">
+            <search string="Search Teams">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="leader_id"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Leader" name="group_by_leader" context="{'group_by': 'leader_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Team Action -->
+    <record id="cc_team_action" model="ir.actions.act_window">
+        <field name="name">Teams</field>
+        <field name="res_model">cc.team</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="cc_team_view_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first team
+            </p>
+            <p>
+                Teams group agents together for management and reporting.
+            </p>
+        </field>
+    </record>
+
+    <!-- Skill List View -->
+    <record id="cc_skill_view_list" model="ir.ui.view">
+        <field name="name">cc.skill.list</field>
+        <field name="model">cc.skill</field>
+        <field name="arch" type="xml">
+            <list string="Skills">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="skill_type" widget="badge"/>
+                <field name="agent_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Skill Form View -->
+    <record id="cc_skill_view_form" model="ir.ui.view">
+        <field name="name">cc.skill.form</field>
+        <field name="model">cc.skill</field>
+        <field name="arch" type="xml">
+            <form string="Skill">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(omni_contact_center.cc_agent_action)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-users"
+                                context="{'search_default_skill_ids': id}">
+                            <field name="agent_count" widget="statinfo" string="Agents"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Skill Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="skill_type"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Skill Action -->
+    <record id="cc_skill_action" model="ir.actions.act_window">
+        <field name="name">Skills</field>
+        <field name="res_model">cc.skill</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define agent skills
+            </p>
+            <p>
+                Skills are used to route calls to qualified agents.
+            </p>
+        </field>
+    </record>
+
+</odoo>
